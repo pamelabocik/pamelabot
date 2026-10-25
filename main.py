@@ -11,7 +11,12 @@ dp = Dispatcher()
 
 @dp.chat_join_request()
 async def approve(update: ChatJoinRequest):
-    await update.approve()
+    print(f"Otrzymano prosbe od uzytkownika: {update.from_user.id}")
+    try:
+        await update.approve()
+        print("Zaakceptowano pomyslnie!")
+    except Exception as e:
+        print(f"Blad przy akceptacji: {e}")
 
 async def dummy_web_server():
     app = web.Application()
@@ -24,7 +29,8 @@ async def dummy_web_server():
 
 async def main():
     await dummy_web_server()
-    await dp.start_polling(bot)
+    # To jest kluczowa zmiana wymuszajaca odbieranie prosb o dolaczenie:
+    await dp.start_polling(bot, allowed_updates=["chat_join_request"])
 
 if __name__ == "__main__":
     asyncio.run(main())
