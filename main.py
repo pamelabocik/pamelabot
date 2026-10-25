@@ -8,17 +8,17 @@ from aiogram.types import ChatJoinRequest
 logging.basicConfig(level=logging.INFO)
 
 # 1. TWÓJ TOKEN Z BOTFATHER:
-BOT_TOKEN = "8913394119:AAH26k20mnPl-BcRRk2MHh4UuHGj0O5HtTQ"
+BOT_TOKEN = "8953794690:AAFvaYxQnprRo04dFGZ3m9NQBNecxXtm1MI"
 
 # 2. TWÓJ LINK DO ZDJĘCIA:
 PHOTO_URL = "https://i.postimg.cc/4xcXWvQJ/IMG-8057.jpg"
 
-# 3. TWOJA NOWA WIADOMOŚĆ Z FORMATOWANIEM:
-CAPTION_TEXT = """✨ <b><i>Witam na moim kanale! cieszę się że do mnie dołączyłeś i mam nadzieję że zostaniesz ze mną na dłużej!</i></b>
+# 3. BEZPIECZNY TEKST BEZ BŁĘDNYCH ZAGNIEŻDŻEŃ ZNACZNIKÓW:
+CAPTION_TEXT = """✨ <b>Witam na moim kanale! cieszę się że do mnie dołączyłeś i mam nadzieję że zostaniesz ze mną na dłużej!🤍</b>
 
 <i>uwielbiam zawierać nowe znajomości, więc jeśli wciąż zastanawiasz się czy do mnie napisać - odpowiedź brzmi TAK!❤️</i>
 
-✨ <b><i>dla nowych klientów przygotowane mam duże, specjalne rabaty oraz niespodzianki!</i></b>
+✨ <b>dla nowych klientów przygotowane mam duże, specjalne rabaty oraz niespodzianki!</b>
 
 🤍 kliknij w moją nazwę użytkownika i napisz do mnie 
 👉🏼 <b>@twojapamelcia</b>
@@ -32,17 +32,17 @@ dp = Dispatcher()
 async def auto_approve_and_send_message(event: ChatJoinRequest):
     logging.info(f"Otrzymano prośbę od: {event.from_user.id} ({event.from_user.first_name})")
     
-    # Krok 1: Akceptacja na kanale
+    # KROK 1: Zawsze najpierw akceptujemy na kanale
     try:
         await bot.approve_chat_join_request(
             chat_id=event.chat.id,
             user_id=event.from_user.id
         )
-        logging.info("Zaakceptowano na kanale!")
+        logging.info("Zaakceptowano prośbę na kanale!")
     except Exception as err:
         logging.error(f"Błąd akceptacji: {err}")
 
-    # Krok 2: Wysłanie prywatnej wiadomości ze zdjęciem i formatowaniem HTML
+    # KROK 2: Wysyłamy zdjęcie z tekstem
     try:
         await bot.send_photo(
             chat_id=event.from_user.id,
@@ -52,7 +52,17 @@ async def auto_approve_and_send_message(event: ChatJoinRequest):
         )
         logging.info("Wiadomość ze zdjęciem wysłana!")
     except Exception as err:
-        logging.warning(f"Nie udało się wysłać DM (blokada prywatności użytkownika): {err}")
+        logging.error(f"Błąd wysyłania zdjęcia z HTML: {err}")
+        # Jeśli Telegram odrzuci HTML, wyślij czysty tekst bez formatowania:
+        try:
+            await bot.send_photo(
+                chat_id=event.from_user.id,
+                photo=PHOTO_URL,
+                caption=CAPTION_TEXT.replace("<b>", "").replace("</b>", "").replace("<i>", "").replace("</i>", "")
+            )
+            logging.info("Wysłano wersję zapasową bez formatowania.")
+        except Exception as fallback_err:
+            logging.error(f"Błąd wersji zapasowej: {fallback_err}")
 
 async def dummy_web_server():
     app = web.Application()
