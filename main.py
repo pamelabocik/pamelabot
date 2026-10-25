@@ -8,18 +8,22 @@ from aiogram.types import ChatJoinRequest
 logging.basicConfig(level=logging.INFO)
 
 # 1. TWÓJ TOKEN Z BOTFATHER:
-BOT_TOKEN = "8953794690:AAFvaYxQnprRo04dFGZ3m9NQBNecxXtm1MI"
+BOT_TOKEN = "8913394119:AAH26k20mnPl-BcRRk2MHh4UuHGj0O5HtTQ"
 
 # 2. TWÓJ LINK DO ZDJĘCIA:
 PHOTO_URL = "https://i.postimg.cc/4xcXWvQJ/IMG-8057.jpg"
 
-# 3. TWOJA WIADOMOŚĆ:
-CAPTION_TEXT = """✨ Witam na moim kanale! cieszę się że do mnie dołączyłeś i mam nadzieję że zostaniesz ze mną na dłużej!🤍
+# 3. TWOJA NOWA WIADOMOŚĆ Z FORMATOWANIEM:
+CAPTION_TEXT = """✨ <b><i>Witam na moim kanale! cieszę się że do mnie dołączyłeś i mam nadzieję że zostaniesz ze mną na dłużej!</i></b>
 
-Uwielbiam zawierać nowe znajomości więc jeśli wciąż się zastanawiać czy do mnie napisać - odpowiedź brzmi TAK!❤️
+<i>uwielbiam zawierać nowe znajomości, więc jeśli wciąż zastanawiasz się czy do mnie napisać - odpowiedź brzmi TAK!❤️</i>
 
-kliknij w moją nazwę użytkownika i napisz do mnie✨
-👉🏼 @twojapamelcia"""
+✨ <b><i>dla nowych klientów przygotowane mam duże, specjalne rabaty oraz niespodzianki!</i></b>
+
+🤍 kliknij w moją nazwę użytkownika i napisz do mnie 
+👉🏼 <b>@twojapamelcia</b>
+
+lub kliknij w poniższe okno czatu: https://t.me/twojapamelcia"""
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
@@ -38,12 +42,13 @@ async def auto_approve_and_send_message(event: ChatJoinRequest):
     except Exception as err:
         logging.error(f"Błąd akceptacji: {err}")
 
-    # Krok 2: Wysłanie prywatnej wiadomości ze zdjęciem
+    # Krok 2: Wysłanie prywatnej wiadomości ze zdjęciem i formatowaniem HTML
     try:
         await bot.send_photo(
             chat_id=event.from_user.id,
             photo=PHOTO_URL,
-            caption=CAPTION_TEXT
+            caption=CAPTION_TEXT,
+            parse_mode="HTML"
         )
         logging.info("Wiadomość ze zdjęciem wysłana!")
     except Exception as err:
