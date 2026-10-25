@@ -8,7 +8,7 @@ from aiogram.types import ChatJoinRequest
 logging.basicConfig(level=logging.INFO)
 
 # TWÓJ TOKEN:
-BOT_TOKEN = "8953794690:AAFORDporaYIYKCOYLudHLlu-IhUFSUX8To"
+BOT_TOKEN = "8953794690:AAFvaYxQnprRo04dFGZ3m9NQBNecxXtm1MI"
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
